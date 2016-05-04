@@ -1,0 +1,48 @@
+angular.factory('FactDbTemporal', function () {
+    return {
+        DataBase: {},
+        addRegistro: function (message, type) {
+            this.DataBase[type] = this.DataBase[type] || [];
+            message.id = this.DataBase[type].length;
+            this.DataBase[type].push(message);
+        },
+        DeleteRegistro: function (message, type) {
+            var temporal = this.DataBase[type];
+            delete this.DataBase[type];
+            this.DataBase[type] = this.DataBase[type] || [];
+
+            for (var x = 0; x < temporal.length; x++) {
+                if (temporal[x].id != message.id) {
+                    temporal[x].id = this.DataBase[type].length;
+                    this.DataBase[type].push(temporal[x]);
+                    
+                }
+            }
+
+            if(this.DataBase[type].length == 0){
+                delete this.DataBase[type];
+            }
+        }
+    };
+
+    //EJEMPLO
+    //consumir desde un controller
+    //$scope.DataBase = FactDbTemporal.DataBase;
+
+    //$scope.insert = function () {
+    //    FactDbTemporal.addRegistro({ id: '1', valor: 'Panama!' }, "Pais");
+    //    FactDbTemporal.addRegistro({ id: '1', valor: 'M', nombre:'Hombre' }, "sexo");
+    //};
+   
+    //$scope.delete = function (msg, key) {
+    //    FactDbTemporal.DeleteRegistro(msg, key);
+    //};
+    // HTML
+    //<div ng-repeat="(key,val) in DataBase" class="{{'tabla-' + key}}">
+    //  {{key}}
+    //      <div ng-repeat="RG in val">
+    //          {{RG.id}} | {{RG.valor}} | {{RG.nombre }}
+    //          <a class="btn pull-right" ng-click="reset(RG,key)">Reset</a>
+    //      </div>
+    //</div>
+});
