@@ -1,18 +1,18 @@
 angular.factory('FactDbTemporal', function () {
     return {
         DataBase: {},
-        addRegistro: function (message, type) {
+        addRegistro: function (registro, type) {
             this.DataBase[type] = this.DataBase[type] || [];
-            message.id = this.DataBase[type].length;
-            this.DataBase[type].push(message);
+            registro.id = this.DataBase[type].length;
+            this.DataBase[type].push(registro);
         },
-        DeleteRegistro: function (message, type) {
+        DeleteRegistro: function (registro, type) {
             var temporal = this.DataBase[type];
             delete this.DataBase[type];
             this.DataBase[type] = this.DataBase[type] || [];
 
             for (var x = 0; x < temporal.length; x++) {
-                if (temporal[x].id != message.id) {
+                if (temporal[x].id != registro.id) {
                     temporal[x].id = this.DataBase[type].length;
                     this.DataBase[type].push(temporal[x]);
                     
