@@ -1,0 +1,22 @@
+      <!-- Firebase -->
+      <script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+      <!-- AngularFire -->
+      <script src="https://cdn.firebase.com/libs/angularfire/1.2.0/angularfire.min.js"></script>
+
+
+angular.factory("firebase", function ($firebaseArray) {
+
+    var query = this;
+   
+    query.consulta = function (tabla) {
+        var itemsRef = new Firebase("https://TU_DB.firebaseio.com/" + tabla);
+        return $firebaseArray(itemsRef);
+    }
+    return query;
+})
+
+.controller('Ctrl', function ($scope, $timeout, firebase) {
+
+
+    
+})
