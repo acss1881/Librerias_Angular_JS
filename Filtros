@@ -1,0 +1,25 @@
+//recorta texto a longitud espesificada 
+angularRoutingApp.filter("maxLength", function () {
+    return function (text, max) {
+        if (text != null) {
+            if (text.length > max) {
+                return text.substring(0, max) + "...";
+            }
+        }
+    }
+});
+//corta la fecha laga que contiene hora y solo deja la fecha ej: 1/1/2015 12:00:00 = 1/1/2015
+angularRoutingApp.filter("fechaCorta", function () {
+    return function (text) {
+        if (text != null) {
+            var dato = text.split(" ");
+            return dato[0];
+        }
+    }
+});
+// convierte de texto a html 
+angularRoutingApp.filter("htmlconvert", ['$sce', function ($sce) {
+    return function(htmlCode){
+        return $sce.trustAsHtml(htmlCode);
+    }
+}]);
