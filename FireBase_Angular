@@ -15,7 +15,7 @@ angular.factory("firebase", function ($firebaseArray) {
     return query;
 })
 
-.controller('Ctrl', function ($scope, $timeout, firebase) {
+angular.controller('Ctrl', function ($scope, $timeout, firebase) {
 
 $scope.envio = {
         dato: 0,
