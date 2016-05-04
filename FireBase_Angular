@@ -17,6 +17,16 @@ angular.factory("firebase", function ($firebaseArray) {
 
 .controller('Ctrl', function ($scope, $timeout, firebase) {
 
-
-    
+$scope.envio = {
+        dato: 0,
+        arreglo:[{nombre:'' }]
+        mensaje: ""
+    };
+ $scope.fire = firebase.consulta("tabla");
+ 
+ $scope.fire.$add($scope.envio).then(function (ref) {
+                var id = ref.key();
+                console.log("added record with id " + id);
+                $scope.fire.$indexFor(id); // retorna localizacion en el array
+            });   
 })
