@@ -22,4 +22,186 @@ angular.filter("htmlconvert", ['$sce', function ($sce) {
     return function(htmlCode){
         return $sce.trustAsHtml(htmlCode);
     }
-}]);
+}])
+
+angular.filter("letraMes", function () {
+    return function (text) {
+        var retorno = text;
+
+            switch (text) {
+                case "1":
+                    retorno = "ENE";
+                    break;
+                case "2":
+                    retorno = "FBR";
+                    break;
+                case "3":
+                    retorno = "MAR";
+                    break;
+                case "4":
+                    retorno = "ABR";
+                    break;
+                case "5":
+                    retorno = "MAY";
+                    break;
+                case "6":
+                    retorno = "JUN";
+                    break;
+                case "7":
+                    retorno = "JUL";
+                    break;
+                case "8":
+                    retorno = "AGO";
+                    break;
+                case "9":
+                    retorno = "SEP";
+                    break;
+                case "10":
+                    retorno = "OCT";
+                    break;
+                case "11":
+                    retorno = "NOV";
+                    break;
+                case "12":
+                    retorno = "DIC";
+                    break;
+                default:
+                    retorno = text;
+            }
+
+        
+        return retorno;
+
+    }
+})
+angular.factory('concatpost', function () {
+
+    return {
+        envio: "",
+
+        permiso: function (data) {
+            var count = 0;
+            var concat = '';
+
+            for (var i in data) {
+                
+                if (count == 0) {
+                    concat = concat + i + '=' + data[i];
+                    count++;
+                }
+                else
+                {
+                    concat = concat + "&";
+                    concat = concat + i + '=' + data[i];
+
+                }
+            }
+            this.envio = concat;
+        }
+    }
+})
+
+
+
+//SQLITE 
+.factory('DBA', function ($cordovaSQLite, $q, $ionicPlatform) {
+    var self = this;
+
+    // Handle query's and potential errors
+    self.query = function (query, parameters) {
+        parameters = parameters || [];
+        var q = $q.defer();
+
+        $ionicPlatform.ready(function () {
+            $cordovaSQLite.execute(db, query, parameters)
+              .then(function (result) {
+                  q.resolve(result);
+              }, function (error) {
+                  console.warn('I found an error');
+                  console.warn(error);
+                  q.reject(error);
+              });
+        });
+        return q.promise;
+    }
+
+    // Proces a result set
+    self.getAll = function (result) {
+        var output = [];
+
+        for (var i = 0; i < result.rows.length; i++) {
+            output.push(result.rows.item(i));
+        }
+        return output;
+    }
+
+    // Proces a single result
+    self.getById = function (result) {
+        var output = null;
+        output = angular.copy(result.rows.item(0));
+        return output;
+    }
+
+    return self;
+})
+
+.factory('Team', function ($cordovaSQLite, DBA) {
+    var self = this;
+
+    self.all = function (query) {
+        return DBA.query(query)
+          .then(function (result) {
+              return DBA.getAll(result);
+          });
+    }
+
+    self.select = function (query, parameters) {
+        var parameters = [memberId];
+        return DBA.query(query, parameters)
+          .then(function (result) {
+              return DBA.getById(result);
+          });
+    }
+
+    self.crud = function (query, parameters) {
+
+        return DBA.query(query, parameters);
+
+    }
+
+    return self;
+})
+
+
+//FIN SQLITE
+
+angular.filter("traductor", function () {
+    return function (text) {
+        var retorno = text;
+        if (text != null && 'es' == 'es') {
+
+            var DT = text.toUpperCase();
+
+
+            switch (DT) {
+                case "E-MAIL":
+                    retorno = "Correo";
+                    break;
+                case "PASSWORD":
+                    retorno = "Contraseña";
+                    break;
+                case "LOGIN":
+                    retorno = "Entar";
+                    break;
+                case "SAVE":
+                    retorno = "Guardar";
+                    break;
+                default:
+                    retorno = text;
+            }
+
+        }
+        return retorno;
+
+    }
+})
