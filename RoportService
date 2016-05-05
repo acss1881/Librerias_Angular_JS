@@ -1,0 +1,56 @@
+.service('ReportService', function ($http, $rootScope) {
+    // datos = variables
+    // link = url
+    // id_iframe = no tiene explicacion
+    // descargar = true / false 
+    
+    this.reporte = function (datos, link, id_iframe, descargar) {
+
+        $http({
+            method: "POST",
+            url: link,
+            data: datos,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            responseType: 'arraybuffer'
+        }).success(function (data, status, headers) {
+        
+          
+            var octetStreamMime = 'application/octet-stream';
+            var success = false;
+            
+            headers = headers();
+            var filename = headers['x-filename'] || id_iframe + '.pdf';
+            var contentType = headers['content-type'] || octetStreamMime;
+
+            if (!success) {
+               
+                var urlCreator = window.URL || window.webkitURL || window.mozURL || window.msURL;
+                if (urlCreator) {
+
+                    try {
+
+                        var blob = new Blob([data], { type: contentType });
+                        var retorno = urlCreator.createObjectURL(blob);
+
+                        var testFrame = document.getElementById(id_iframe);
+                        
+                        testFrame.src = retorno;
+                        if (descargar) {
+                            window.open(retorno, '_blank', '');
+                        }
+                    } catch (ex) {
+                        console.log(ex);
+                    }
+                }
+            }
+
+        }).error(function () {
+            alert("Al Consultar Reporte..");
+        });
+       
+    };
+});
+
+
+// Pegar en el HTML 
+// <iframe id="testFrame" src="" style=" width:100%;height:750px"></iframe>
