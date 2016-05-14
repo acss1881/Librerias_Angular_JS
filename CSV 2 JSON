@@ -1,0 +1,100 @@
+app.directive("fileread", [function (csv2json) {
+    return {
+        restrict: "E",
+        template: '<input type="file"/>',
+        scope: {
+            data: "="
+        },
+        link: function ( scope, element, attributes) {
+            element.bind("change", function (changeEvent) {
+                scope.$apply(function () {
+                    
+
+                    var reader = new FileReader();
+
+                    reader.onload = function () {
+
+                        scope.data = CSV2JSON(reader.result);
+                       
+                    };
+
+                    reader.readAsText(changeEvent.target.files[0]);
+
+                });
+            });
+
+
+            function CSVToArray(strData, strDelimitador) {
+                // Cheque para ver si se definio el delimitador
+                // si no le coloca una coma por default.
+                strDelimitador = (strDelimitador || ",");
+                // crea una exprecion regular para csv 
+                var objPattern = new RegExp(("(\\" + strDelimitador + "|\\r?\\n|\\r|^)" + "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" + "([^\"\\" + strDelimitador + "\\r\\n]*))"), "gi");
+
+                // Crea una matriz para mantener nuestros datos . 
+                // Una primera fila vacía predeterminada .
+                var arrData = [[]];
+
+                // Crear una matriz para contener nuestro patrón individual
+                var arrMatches = null;
+
+
+                // Mantiene un bucle sobre la expresión regular 
+                // Hasta que ya no podemos encontrar una coincidencia.
+                while (arrMatches = objPattern.exec(strData)) {
+                    // Obtinen el delimitador que se encontró 
+                    var strMatchedDelimiter = arrMatches[1];
+
+                    // Comprobar si el delimitador dado tiene una longitud
+                    // ( No es el comienzo de la cadena) y si coincide
+                    // Delimitador de campo . Si el ID no lo hace, entonces sabemos
+                    // que este es un delimitador de filas .
+                    if (strMatchedDelimiter.length && (strMatchedDelimiter != strDelimitador)) {
+
+                        // Ya que hemos llegado a una nueva fila de datos ,
+                        // Añadir una fila vacía a nuestra matriz de datos .
+                        arrData.push([]);
+                    }
+                    // Ahora que tenemos nuestro delimitador fuera del camino ,
+                    // Vamos a ver para ver qué tipo de valor fue
+                    // Capturado 
+                    if (arrMatches[2]) {
+
+                        // Se encontró un valor cotizado. Cuando capturamos
+                        // Este valor , unescape las comillas dobles .
+                        var strMatchedValue = arrMatches[2].replace(
+                        new RegExp("\"\"", "g"), "\"");
+                    } else {
+                        // Hemos encontrado un valor que no sea citado .
+                        var strMatchedValue = arrMatches[3];
+                    }
+
+                    // Ahora que tenemos nuestra cadena de valor , vamos a añadir
+                    // A la matriz de datos.
+                    arrData[arrData.length - 1].push(strMatchedValue);
+                }
+                // Devolver los datos analizados .
+                return (arrData);
+            }
+
+            function CSV2JSON(csv) {
+                var array = CSVToArray(csv);
+                var objArray = [];
+                for (var i = 1; i < array.length; i++) {
+                    objArray[i - 1] = {};
+                    for (var k = 0; k < array[0].length && k < array[i].length; k++) {
+                        var key = array[0][k];
+                        objArray[i - 1][key] = array[i][k]
+                    }
+                }
+
+                var json = JSON.stringify(objArray);
+                var str = json.replace(/},/g, "},\r\n");
+
+                return str;
+            }
+        }
+    }
+}]);
+
+//  <fileread data="file"> </fileread>
