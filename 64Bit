@@ -1,0 +1,27 @@
+<input type="file" id="foto">
+
+<script>(function(){
+
+if( ! window.FileReader ) {
+	return; // No soportado
+}
+var input = document.querySelector('#foto');
+// Éste es el elemento mediante el que el usuario nos indica cuál es la imagen
+
+// No hacen falta hacks para IE, ya que IE 7 y 8 ya se habrán caído con la condición anterior
+input.addEventListener('change', function(e){
+	// Cogemos el primer archivo
+	var archivo = input.files[0],
+		// Creamos la instancia de FileReader
+		reader = new FileReader(),
+		urlBase64;
+	// Os esperábais algo más complicado?
+	reader.onload = function(){
+		urlBase64 = reader.result;
+		// Hacer lo que se quiera con la url
+	}
+	reader.readAsDataUrl(file);
+}, false);
+
+})()
+</script>
