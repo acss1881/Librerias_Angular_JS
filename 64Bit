@@ -15,7 +15,7 @@ input.addEventListener('change', function(e){
 		// Creamos la instancia de FileReader
 		reader = new FileReader(),
 		urlBase64;
-	// Os esperábais algo más complicado?
+	
 	reader.onload = function(){
 		urlBase64 = reader.result;
 		// Hacer lo que se quiera con la url
@@ -24,4 +24,7 @@ input.addEventListener('change', function(e){
 }, false);
 
 })()
+
+
+//para cualquier tipo de archivo...
 </script>
